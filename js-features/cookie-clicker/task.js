@@ -15,3 +15,5 @@ cooki.onclick = function () {
 
     lastClickTime = currentTime;
 }
+
+document.classList.toggle()
