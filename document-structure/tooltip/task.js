@@ -1,32 +1,23 @@
-let hasTooltips = document.querySelectorAll('.has-tooltip');
+let links = Array.from(document.querySelectorAll('.has-tooltip'));
 
-hasTooltips.forEach(element => {
-    element.onclick = function(event) {
-        event.preventDefault();
-        
-        const existingTooltip = element.querySelector('.tooltip_active');
-        
-        // Сначала удаляем ВСЕ активные подсказки на странице (чтобы была только одна)
-        const allActiveTooltips = document.querySelectorAll('.tooltip_active');
-        allActiveTooltips.forEach(t => t.remove());
+links.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        let activeTooltip = link.querySelector('.tooltip_active');
 
-        // Если подсказка не была открыта именно на этом элементе — создаем её
-        if (!existingTooltip) {
-            const tooltipText = element.getAttribute('title');
-            
-            // Создаем элемент подсказки
-            const tooltipElement = document.createElement('div');
-            tooltipElement.className = 'tooltip tooltip_active';
-            tooltipElement.innerText = tooltipText;
+        let allTooltips = document.querySelectorAll('.tooltip');
+        allTooltips.forEach(t => t.remove());
 
-            // Добавляем в DOM, чтобы вычислить размеры
-            document.body.appendChild(tooltipElement);
-
-            // Позиционируем относительно элемента
-            const { left, bottom } = element.getBoundingClientRect();
-            
-            tooltipElement.style.left = `${left}px`;
-            tooltipElement.style.top = `${bottom}px`;
+        if (activeTooltip) {
+            return;
         }
-    };
+        let tooltip = document.createElement('div');
+        tooltip.className = 'tooltip tooltip_active';
+        tooltip.innerText = link.getAttribute('title');
+        document.body.appendChild(tooltip);
+
+        let { left, bottom } = link.getBoundingClientRect();
+        tooltip.style.left = `${left}px`;
+        tooltip.style.top = `${bottom + window.scrollY}px`;
+    });
 });
